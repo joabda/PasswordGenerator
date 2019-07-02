@@ -7,8 +7,9 @@ class DBMethods : public DataBase<ExportMethod>
 {
 public:
     DBMethods();
-    virtual void insertElement(ExportMethod* elementToInsert) override;
-    virtual void readElement() override;
+    void insertElement(ExportMethod* elementToInsert) override;
+    void readElement() override;
+    ~DBMethods() override;
 };
 
 #endif // DBMETHODS_H

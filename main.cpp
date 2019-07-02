@@ -3,9 +3,9 @@
 #include <QVector>
 #include <QDebug>
 #include "login.h"
-#include "rule.h"
-#include "dataBase.h"
-#include "rulesmanager.h"
+#include "Rules/rule.h"
+#include "Rules/dbrules.h"
+#include "Rules/rulesmanager.h"
 
 #include "password.h"
 
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     // Get Rules from DB on app start
     QString hello;
-    DataBase<Rule*> rulesDB(Rules, hello);
+    DBRules rulesDB;
     rulesDB.setTableName("Rules");
     rulesDB.readElement();
     QVector<Rule*> rules = rulesDB.getReadElements();

@@ -9,8 +9,9 @@
 class ExportMethod
 {
 public:
-    virtual void saveAs(const QVector<QPair<QString, QString>>& password) = 0;
-    virtual QString getName() const = 0;
+    ExportMethod(const QString& name) { name_ = name; }
+    virtual void saveAs(const QVector<QPair<QString, QString>>& password);
+    virtual QString getName() const;
     virtual ~ExportMethod() {}
 
 protected:

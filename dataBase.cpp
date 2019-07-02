@@ -51,10 +51,10 @@ QString DataBase<T>::getTableName() const
 
 // argc is the number of columns in the table
 // argv are the values of the entries
-static int callback(void* NotUsed, int argc, char** argv, char** azColName)
+static int callback(void* unUsed, int count, char** data, char** azColName)
 {
-   for(int i = 0; i < argc; i++)
-      printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+   for(int i = 0; i < count; i++)
+      printf("%s = %s\n", azColName[i], data[i] ? data[i] : "NULL");
    printf("\n");
    return 0;
 }
@@ -117,31 +117,13 @@ void DataBase<T>::readElement()
         error("Cannot open database");
 
     QString read = "SELECT * from " + tableName_;
-    sqlite3_stmt* stmt;
-    rc_ = sqlite3_prepare_v2(db_, read.toStdString().c_str(), -1, &stmt, nullptr);
+
+    rc_ = sqlite3_prepare_v2(db_, read.toStdString().c_str(), -1, &stmt_, nullptr);
 
     if (rc_ != SQLITE_OK)
         error("Select Error");
     else
-        numberOfColumns_ = sqlite3_data_count(stmt);
-
-    QString createRuleParameters[numberOfColumns_];
-
-    while( (rc_ = sqlite3_step(stmt) ) == SQLITE_ROW)
-    {
-        for (int i = 0; i < numberOfColumns_; i++)
-            createRuleParameters[i] = QString::fromStdString(std::string(reinterpret_cast< char const* >(sqlite3_column_text(stmt, i))));
-        container_.push_back(new T(createRuleParameters[0], createRuleParameters[1].toUInt(), createRuleParameters[2].toInt(),
-                createRuleParameters[3].toUInt(),createRuleParameters[4].toUInt(), createRuleParameters[5]!="0"));
-    }
-
-    while(rc_ == SQLITE_ROW)
-     {
-         for(int i =  0; i < numberOfColumns_; i++)
-            fprintf(stderr, "'%s' ", sqlite3_column_text(stmt, i));
-         fprintf(stderr, "\n");
-         rc_ = sqlite3_step(stmt);
-     }
+        numberOfColumns_ = sqlite3_data_count(stmt_);
 }
 
 template<typename T>

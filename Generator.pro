@@ -38,9 +38,7 @@ SOURCES += \
         login.cpp \
         main.cpp \
         mainwindow.cpp \
-        password.cpp \
-        rule.cpp \
-        rulesmanager.cpp
+        password.cpp
 
 HEADERS += \
         Export/dbmethods.h \
@@ -54,9 +52,7 @@ HEADERS += \
         dataBase.h \
         login.h \
         mainwindow.h \
-        password.h \
-        rule.h \
-        rulesmanager.h
+        password.h
 
 FORMS += \
         login.ui \

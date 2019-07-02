@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <QDebug>
-#include "rule.h"
+#include "Rules/rule.h"
 using namespace std;
 
 static QString alpha = "abcdefghijklmnopqrstuvwxyz";

@@ -1,8 +1,8 @@
 #include "txt.h"
 
-TXT::TXT()
+TXT::TXT() :
+    ExportMethod("Text")
 {
-    name_ = "Text";
 }
 
 void TXT::saveAs(const QVector<QPair<QString, QString>>& password)

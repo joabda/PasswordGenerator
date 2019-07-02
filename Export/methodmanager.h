@@ -16,7 +16,6 @@ public:
     ExportMethod* findType(const QString& name) const;
 
     void addMethod(ExportMethod* toAdd);
-
     void removeMethod(QListWidgetItem* checkedMethod);
 
     QMap<QString, ExportMethod*> getMethods() const;

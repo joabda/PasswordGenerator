@@ -10,7 +10,7 @@
 #include <QMap>
 #include <QMessageBox>
 #include "password.h"
-#include "rulesmanager.h"
+#include "Rules/rulesmanager.h"
 #include "Export/exportmethod.h"
 #include "Export/pdf.h"
 #include "Export/txt.h"

@@ -12,7 +12,7 @@ public:
     TXT();
     void saveAs(const QVector<QPair<QString, QString>>& password) override;
     QString getName() const override;
-    ~TXT() {}
+    ~TXT() override {}
 };
 
 #endif // TXT_H
