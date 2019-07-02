@@ -1,8 +1,7 @@
 #include "dataBase.h"
 
-#include <QDebug>
-
-DataBase::DataBase(const QString& dbName, const DbUse& dbUse)
+template<typename T>
+DataBase<T>::DataBase(const QString& dbName)
 /*
       @det 		Constructor of the Login class
       @param    QString     database's name
@@ -11,7 +10,6 @@ DataBase::DataBase(const QString& dbName, const DbUse& dbUse)
 */
 {
     dbName_ = dbName;
-    readRules_ = new QVector<Rule*>();
     if(!QFile(dbName_ + ".db").exists())
     {
         rc_ = sqlite3_open((dbName_ + ".db").toStdString().c_str(), &db_);
@@ -20,11 +18,35 @@ DataBase::DataBase(const QString& dbName, const DbUse& dbUse)
         if (rc_ != SQLITE_OK)
             error("Cannot open database");
 
-        rc_ = sqlite3_exec(db_, createQuery.toStdString().c_str(), nullptr, nullptr, &errorMessage_);
+        rc_ = sqlite3_exec(db_, createQuery_.toStdString().c_str(), nullptr, nullptr, &errorMessage_);
 
         if (rc_ != SQLITE_OK )
            error("SQL error");
     }
+}
+
+template<typename T>
+void DataBase<T>::setDBName(const QString& dbName)
+{
+    dbName_ = dbName;
+}
+
+template<typename T>
+QString DataBase<T>::getDBName() const
+{
+    return dbName_;
+}
+
+template<typename T>
+void DataBase<T>::setTableName(const QString& tableName)
+{
+    tableName_ = tableName;
+}
+
+template<typename T>
+QString DataBase<T>::getTableName() const
+{
+    return tableName_;
 }
 
 // argc is the number of columns in the table
@@ -37,27 +59,8 @@ static int callback(void* NotUsed, int argc, char** argv, char** azColName)
    return 0;
 }
 
-void DataBase::setTableName(const QString& tableName)
-/*
-      @det 		Setter for the table's name
-      @param    QString     table's name
-      @return 	void
-*/
-{
-    tableName_ = tableName;
-}
-
-QString DataBase::getTableName() const
-/*
-      @det 		Getter for the table's name
-      @param    void
-      @return 	QString     table's name
-*/
-{
-    return tableName_;
-}
-
-QVector<Rule*> DataBase::getReadElements() const
+template<typename T>
+QVector<T*> DataBase<T>::getReadElements() const
 /*
       @det 		Getter of the rules read from the database
       @param    void
@@ -65,10 +68,11 @@ QVector<Rule*> DataBase::getReadElements() const
                                         have been read from the database
 */
 {
-    return *readRules_;
+    return container_;
 }
 
-void DataBase::error(const string& message)
+template<typename T>
+void DataBase<T>::error(const string& message)
 /*
       @det 		Method to print database's error and free the error message
       @param    string      customized message to get along with the database's message
@@ -80,7 +84,8 @@ void DataBase::error(const string& message)
     sqlite3_close(db_);
 }
 
-void DataBase::insertElement(const Rule* toInsert)
+template<typename T>
+void DataBase<T>::insertElement(T* toInsert)
 /*
       @det 		Method to insert a rule in the database
       @param    Rules*      pointer to the rule that has to be inserted
@@ -91,19 +96,14 @@ void DataBase::insertElement(const Rule* toInsert)
 
     if (rc_ != SQLITE_OK)
         error("Cannot open database");
-    QString insert = "INSERT into " + tableName_ +
-                     "(name, minChars, maxChars, minCapital,"
-                     " minNumbers, specialChars) VALUES(";
-    insert += "'" + toInsert->getName() + "'" + ", " + QString::number(toInsert->getMinChars()) + ", " + QString::number(toInsert->getMaxChars())
-            + ", " + QString::number(toInsert->getMinCapital()) + ", " + QString::number(toInsert->getMinNumbers()) + ", "
-            + QString::number(toInsert->getSpecialChars()) + ");";
 
-    rc_ = sqlite3_exec(db_, insert.toStdString().c_str(), callback, nullptr, &errorMessage_);
+    rc_ = sqlite3_exec(db_, insertQuery_.toStdString().c_str(), callback, nullptr, &errorMessage_);
     if (rc_ != SQLITE_OK )
        error("INSERT error");
 }
 
-void DataBase::readElement()
+template<typename T>
+void DataBase<T>::readElement()
 /*
       @det 		Method to read all the rulse from the database
                     and save them into the container
@@ -122,26 +122,30 @@ void DataBase::readElement()
 
     if (rc_ != SQLITE_OK)
         error("Select Error");
-    QString createRuleParameters[6];
+    else
+        numberOfColumns_ = sqlite3_data_count(stmt);
+
+    QString createRuleParameters[numberOfColumns_];
 
     while( (rc_ = sqlite3_step(stmt) ) == SQLITE_ROW)
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < numberOfColumns_; i++)
             createRuleParameters[i] = QString::fromStdString(std::string(reinterpret_cast< char const* >(sqlite3_column_text(stmt, i))));
-        readRules_->push_back(new Rule(createRuleParameters[0], createRuleParameters[1].toUInt(), createRuleParameters[2].toInt(),
+        container_.push_back(new T(createRuleParameters[0], createRuleParameters[1].toUInt(), createRuleParameters[2].toInt(),
                 createRuleParameters[3].toUInt(),createRuleParameters[4].toUInt(), createRuleParameters[5]!="0"));
     }
 
     while(rc_ == SQLITE_ROW)
      {
-         for(int i =  0; i < 6; i++)
+         for(int i =  0; i < numberOfColumns_; i++)
             fprintf(stderr, "'%s' ", sqlite3_column_text(stmt, i));
          fprintf(stderr, "\n");
          rc_ = sqlite3_step(stmt);
      }
 }
 
-DataBase::~DataBase()
+template<typename T>
+DataBase<T>::~DataBase()
 /*
       @det 		Destructor of the DataBase class will close the connection with the DataBase
       @param    void
@@ -150,3 +154,6 @@ DataBase::~DataBase()
 {
     sqlite3_close(db_);
 }
+
+template class DataBase<Rule>;
+template class DataBase<ExportMethod>;

@@ -14,10 +14,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     // Get Rules from DB on app start
-    DataBase rulesDB;
+    QString hello;
+    DataBase<Rule*> rulesDB(Rules, hello);
     rulesDB.setTableName("Rules");
-    rulesDB.readRules();
-    QVector<Rule*> rules = rulesDB.getReadRules();
+    rulesDB.readElement();
+    QVector<Rule*> rules = rulesDB.getReadElements();
     RulesManager manager(rules);
     MethodManager methodManager;
 
@@ -34,13 +35,12 @@ int main(int argc, char *argv[])
     defaultRules.push_back(new Rule("Twitter", 10, 0, 1, 1, true));
     defaultRules.push_back(new Rule("Instagram", 6, 0, 1, 1, true));
     for (int i = 0;i < defaultRules.size();i++)
-        rulesDB.insertRule(defaultRules[i]);
+        rulesDB.insertElement(defaultRules[i]);
 
     // DEBUGGING
     qDebug() << rules.size() << endl;
     for (auto& i : rules)
         i->showRule();
-
 
     return a.exec();
 }

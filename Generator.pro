@@ -27,9 +27,13 @@ LIBS += -lsqlite3
 CONFIG += c++11
 
 SOURCES += \
+        Export/dbmethods.cpp \
         Export/methodmanager.cpp \
         Export/pdf.cpp \
         Export/txt.cpp \
+        Rules/dbrules.cpp \
+        Rules/rule.cpp \
+        Rules/rulesmanager.cpp \
         dataBase.cpp \
         login.cpp \
         main.cpp \
@@ -39,10 +43,14 @@ SOURCES += \
         rulesmanager.cpp
 
 HEADERS += \
+        Export/dbmethods.h \
         Export/exportmethod.h \
         Export/methodmanager.h \
         Export/pdf.h \
         Export/txt.h \
+        Rules/dbrules.h \
+        Rules/rule.h \
+        Rules/rulesmanager.h \
         dataBase.h \
         login.h \
         mainwindow.h \
