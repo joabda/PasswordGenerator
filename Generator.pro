@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,11 +28,9 @@ LIBS += -lsqlite3
 CONFIG += c++11
 
 SOURCES += \
-        Export/dbmethods.cpp \
         Export/methodmanager.cpp \
         Export/pdf.cpp \
         Export/txt.cpp \
-        Rules/dbrules.cpp \
         Rules/rule.cpp \
         Rules/rulesmanager.cpp \
         dataBase.cpp \
@@ -41,12 +40,10 @@ SOURCES += \
         password.cpp
 
 HEADERS += \
-        Export/dbmethods.h \
         Export/exportmethod.h \
         Export/methodmanager.h \
         Export/pdf.h \
         Export/txt.h \
-        Rules/dbrules.h \
         Rules/rule.h \
         Rules/rulesmanager.h \
         dataBase.h \

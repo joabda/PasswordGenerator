@@ -7,7 +7,6 @@ PDF::PDF() :
 
 void PDF::saveAs(const QVector<QPair<QString, QString>>& password)
 {
-
     QString html =
     "<div align=right>"
        "Montreal," + QDate::currentDate().toString() +

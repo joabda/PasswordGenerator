@@ -9,7 +9,6 @@
 #include "Rules/rule.h"
 using namespace std;
 
-template<typename T>  // T is Rule* when DB is used for rules, or T is ExportMethod* when used to get methods
 class DataBase
 {
 public:
@@ -21,24 +20,18 @@ public:
     void setTableName(const QString& tableName);
     QString getTableName() const;
 
-    QVector<T*> getReadElements() const;
-    virtual void insertElement(T* elementToInsert);
+    QVector<Rule*> getReadElements() const;
+    virtual void insertElement(Rule* elementToInsert);
     virtual void readElement();
 
     virtual ~DataBase();
 
-protected:
-    QString createQuery_;
-    QString insertQuery_;
+private:
     int rc_;
     int numberOfColumns_;
-    sqlite3_stmt* stmt_;
-    QVector<T*> container_;
-
-private:
+    QVector<Rule*> container_;
     sqlite3* db_;
     QString dbName_;
-    QString tableName_;
     char* errorMessage_;
     void error(const string& message);
 };
