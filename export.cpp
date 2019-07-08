@@ -8,27 +8,34 @@ Export::Export()
 
 void Export::PDF(const QVector<QPair<QString, QString>>& password) const
 {
-    QPdfWriter exportFile("Passwords");
-    exportFile.setPageSize(QPagedPaintDevice::A4);
-    exportFile.setPageMargins(QMargins(30, 30, 30, 30));
+    QString html =
+    "<div align=left>"
+       "Generator<br>"
+       "<a href=\"https://github.com/joabda/PasswordGenerator\">For More Informations </a>"
+       "Montreal, Quebec<br>"
+    "</div>"
+    "<div align=right>"
+       "Passwords generated on <br>"
+        + QDate::currentDate().toString() +
+    "</div>"
+    "<h1 align=center>Generated Passwords</h1>"
+    "<p align=justify>";
+    for(auto& element : password)
+        html += "Password for " + element.first + " is : " + element.second + ".<br>";
 
-    QPainter painter(&exportFile);
-    painter.setPen(Qt::black);
-    painter.setFont(QFont("Times", 10));
+    html += "</p>"
+            "<div align=right>sincerly</div>";
 
-    QRect rect = painter.viewport();
+    QTextDocument document;
+    document.setHtml(html);
 
-    QString citydate = "Passwords generated " + QDate::currentDate().toString();
+    QPrinter printer(QPrinter::PrinterResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setPaperSize(QPrinter::A4);
+    printer.setOutputFileName("Passwords");
+    printer.setPageMargins(QMarginsF(15, 15, 15, 15));
 
-    painter.drawText(rect, Qt::AlignRight, citydate);
-
-
-    QString sender = "Generator\n";
-    sender += "github.com/joabda/Generator\n";
-    sender += "Quebec, Canada\n";
-
-    painter.drawText(rect, Qt::AlignLeft, sender);
-    painter.end();
+    document.print(&printer);
 }
 
 void Export::TXT(const QVector<QPair<QString, QString>>& password) const

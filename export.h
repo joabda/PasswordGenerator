@@ -5,12 +5,16 @@
 #include <fstream>
 #include <QVector>
 #include <QPair>
-
-
 #include <QPdfWriter>
 #include <QPainter>
 
+#include <QDebug>
 
+
+
+
+#include <QTextDocument>
+#include <QPrinter>
 using namespace std;
 
 class Export
