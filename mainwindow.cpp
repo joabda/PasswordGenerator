@@ -86,6 +86,29 @@ void MainWindow::on_selectedButton_clicked()
     }
 }
 
+void MainWindow::on_allButton_clicked()
+{
+    if(selectedMethods_.isEmpty())
+    {
+        QMessageBox mbox;
+        mbox.setText("Please Select an export method.\n");
+        mbox.exec();
+    }
+    else
+    {
+        for(int i = 0; i < ui->rules->count(); ++i)
+            namesOfSelectedRules_.push_back(qMakePair<QString, QString>(ui->rules->item(i)->text(), "Null"));
+        Password generator;
+        for(auto& element : namesOfSelectedRules_)
+            element.second = generator(rulesManager_->findRule(element.first));
+        for(auto& method : selectedMethods_)
+            methodManager_.saveAs(method, namesOfSelectedRules_);
+
+        QMessageBox mbox;
+        mbox.setText("Passwords have been generated.\n");
+        mbox.exec();
+    }
+}
 
 MainWindow::~MainWindow()
 {

@@ -34,6 +34,8 @@ public slots:
 private slots:
     void on_selectedButton_clicked();
 
+    void on_allButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     RulesManager* rulesManager_;

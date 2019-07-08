@@ -23,8 +23,7 @@ void Export::PDF(const QVector<QPair<QString, QString>>& password) const
     for(auto& element : password)
         html += "Password for " + element.first + " is : " + element.second + ".<br>";
 
-    html += "</p>"
-            "<div align=right>sincerly</div>";
+    html += "</p>";
 
     QTextDocument document;
     document.setHtml(html);
