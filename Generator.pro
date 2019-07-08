@@ -28,25 +28,20 @@ LIBS += -lsqlite3
 CONFIG += c++11
 
 SOURCES += \
-        Export/methodmanager.cpp \
-        Export/pdf.cpp \
-        Export/txt.cpp \
         Rules/rule.cpp \
         Rules/rulesmanager.cpp \
         dataBase.cpp \
+        export.cpp \
         login.cpp \
         main.cpp \
         mainwindow.cpp \
         password.cpp
 
 HEADERS += \
-        Export/exportmethod.h \
-        Export/methodmanager.h \
-        Export/pdf.h \
-        Export/txt.h \
         Rules/rule.h \
         Rules/rulesmanager.h \
         dataBase.h \
+        export.h \
         login.h \
         mainwindow.h \
         password.h

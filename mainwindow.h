@@ -6,15 +6,10 @@
 #include <QMap>
 #include <QDebug>
 #include <QListWidget>
-#include <QPair>
-#include <QMap>
 #include <QMessageBox>
 #include "password.h"
+#include "export.h"
 #include "Rules/rulesmanager.h"
-#include "Export/exportmethod.h"
-#include "Export/pdf.h"
-#include "Export/txt.h"
-#include "Export/methodmanager.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,10 +20,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(RulesManager* rulesManager, MethodManager* methodManager, QWidget *parent = nullptr);
+    explicit MainWindow(RulesManager* rulesManager, QWidget *parent = nullptr);
     void addRuleToView(Rule* toAdd);
     void addRulesToView(QMap<QString, Rule*> toAdd);
-    void addMethodsToView(QMap<QString, ExportMethod*> toAdd);
+    void addMethodsToView(QVector<QString> toAdd);
     ~MainWindow();
 
 public slots:
@@ -41,10 +36,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    MethodManager* methodManager_;
     RulesManager* rulesManager_;
+    Export methodManager_;
     QVector<QPair<QString, QString>> namesOfSelectedRules_; // First element is the rule's name, second is the password
-    QMap<QString, ExportMethod*> selectedMethods_;
+    QVector<QString> selectedMethods_;
     void design();
 };
 

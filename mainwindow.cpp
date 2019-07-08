@@ -1,16 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(RulesManager* rulesManager, MethodManager* methodManager ,QWidget *parent) :
+MainWindow::MainWindow(RulesManager* rulesManager, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     rulesManager_ = rulesManager;
-    methodManager_ = methodManager;
     setWindowTitle("Generator");
     ui->setupUi(this);
     addRulesToView(rulesManager_->getCopyContainer());
-    addMethodsToView(methodManager_->getMethods());
+    addMethodsToView(methodManager_.getMethods());
     QObject::connect(ui->rules, SIGNAL(itemChanged(QListWidgetItem*)),
                         this, SLOT(selected(QListWidgetItem*)));
     QObject::connect(ui->exportMethods, SIGNAL(itemChanged(QListWidgetItem*)),
@@ -30,13 +29,11 @@ void MainWindow::selected(QListWidgetItem* checkedItem)
 void MainWindow::methodSelected(QListWidgetItem* checkedMethod)
 {
     if(checkedMethod->checkState() == Qt::Checked)
-        selectedMethods_.insert(checkedMethod->text(), methodManager_->findType(checkedMethod->text()));
+        selectedMethods_.push_back(checkedMethod->text());
     else
-    {
-        auto foundElement = selectedMethods_.find(checkedMethod->text());
-        if(foundElement != selectedMethods_.end())
-            selectedMethods_.erase(foundElement);
-    }
+        for(int index = 0; index < selectedMethods_.size(); index++)
+            if(selectedMethods_[index] == checkedMethod->text())
+                selectedMethods_.erase(selectedMethods_.begin() + index);
 }
 
 void MainWindow::display()
@@ -51,11 +48,11 @@ void MainWindow::addRuleToView(Rule* toAdd)
     itemToAdd->setCheckState(Qt::Unchecked);
 }
 
-void MainWindow::addMethodsToView(QMap<QString, ExportMethod*> toAdd)
+void MainWindow::addMethodsToView(QVector<QString> toAdd)
 {
     for(auto& oneElement : toAdd)
     {
-        QListWidgetItem* methodToAdd = new QListWidgetItem(oneElement->getName(), ui->exportMethods);
+        QListWidgetItem* methodToAdd = new QListWidgetItem(oneElement, ui->exportMethods);
         methodToAdd->setFlags(methodToAdd->flags() | Qt::ItemIsUserCheckable);
         methodToAdd->setCheckState(Qt::Unchecked);
     }
@@ -81,21 +78,16 @@ void MainWindow::on_selectedButton_clicked()
         for(auto& element : namesOfSelectedRules_)
             element.second = generator(rulesManager_->findRule(element.first));
         for(auto& method : selectedMethods_)
-            method->saveAs(namesOfSelectedRules_);
+            methodManager_.saveAs(method, namesOfSelectedRules_);
+
+        QMessageBox mbox;
+        mbox.setText("Passwords have been generated.\n");
+        mbox.exec();
     }
-
-    for(auto& selected : namesOfSelectedRules_)
-        qDebug() << selected.first << endl;
-    qDebug() << endl << endl;
-    for(auto& methods : selectedMethods_)
-        qDebug() << methods->getName() << endl;
-
 }
 
 
 MainWindow::~MainWindow()
 {
-    for(auto& element : selectedMethods_)
-        delete element;
     delete ui;
 }

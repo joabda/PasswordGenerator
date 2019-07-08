@@ -5,7 +5,6 @@
 #include <QFile>
 #include <cstring>
 #include <QDebug>
-#include "Export/exportmethod.h"
 #include "Rules/rule.h"
 using namespace std;
 

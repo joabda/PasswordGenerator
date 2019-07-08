@@ -6,7 +6,6 @@
 #include "Rules/rule.h"
 #include "dataBase.h"
 #include "Rules/rulesmanager.h"
-
 #include "password.h"
 
 int main(int argc, char *argv[])
@@ -28,18 +27,12 @@ int main(int argc, char *argv[])
     rulesDB.readElement();
     QVector<Rule*> rules = rulesDB.getReadElements();
     RulesManager manager(rules);
-    MethodManager methodManager;
 
     // Create login dialog and wait for successfull login before proceeding
     Login loginDialog;
-    MainWindow mainWin(&manager, &methodManager);
+    MainWindow mainWin(&manager);
     QObject::connect(&loginDialog, SIGNAL(successfullLogin()), &mainWin, SLOT(show()));
     loginDialog.exec();
-
-    // DEBUGGING
-    qDebug() << rules.size() << endl;
-    for (auto& i : rules)
-        i->showRule();
 
     return a.exec();
 }
